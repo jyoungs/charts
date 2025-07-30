@@ -20,18 +20,19 @@ spec:
       previewService: {{ .Release.Name }}-preview
       autoPromotionEnabled: false
       scaleDownDelaySeconds: {{ .Values.blueGreen.scaleDownDelaySeconds }}
-      prePromotionAnalysis:
-        templates:
-        - templateName: success-rate
-        args:
-        - name: service-name
-          value: {{ .Release.Name }}-preview
-      postPromotionAnalysis:
-        templates:
-        - templateName: success-rate
-        args:
-        - name: service-name
-          value: {{ .Release.Name }}
+      # Analysis disabled due to Prometheus authentication requirements
+      # prePromotionAnalysis:
+      #   templates:
+      #   - templateName: success-rate
+      #   args:
+      #   - name: service-name
+      #     value: {{ .Release.Name }}-preview
+      # postPromotionAnalysis:
+      #   templates:
+      #   - templateName: success-rate
+      #   args:
+      #   - name: service-name
+      #     value: {{ .Release.Name }}
   template:
     metadata:
       annotations:
