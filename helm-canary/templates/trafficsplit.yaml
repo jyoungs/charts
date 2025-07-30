@@ -1,0 +1,16 @@
+apiVersion: split.smi-spec.io/v1alpha1
+kind: TrafficSplit
+metadata:
+  name: {{ .Release.Name }}-traffic-split
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  service: {{ .Release.Name }}
+  backends:
+  - service: {{ .Release.Name }}-stable
+    weight: 100
+  - service: {{ .Release.Name }}-canary
+    weight: 0 

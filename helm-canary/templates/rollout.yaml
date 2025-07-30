@@ -1,0 +1,84 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  strategy:
+    canary:
+      stableService: {{ .Release.Name }}-stable
+      canaryService: {{ .Release.Name }}-canary
+      trafficRouting:
+        smi:
+          rootService: {{ .Release.Name }}
+          trafficSplitName: {{ .Release.Name }}-traffic-split
+      steps:
+      - setWeight: {{ .Values.canary.steps.setWeight1 }}
+      - pause: 
+          duration: {{ .Values.canary.steps.pause1Duration }}
+      - analysis:
+          templates:
+          - templateName: success-rate
+          args:
+          - name: service-name
+            value: {{ .Release.Name }}-canary
+      - setWeight: {{ .Values.canary.steps.setWeight2 }}
+      - pause: 
+          duration: {{ .Values.canary.steps.pause2Duration }}
+      - analysis:
+          templates:
+          - templateName: success-rate
+          args:
+          - name: service-name
+            value: {{ .Release.Name }}-canary
+      - setWeight: {{ .Values.canary.steps.setWeight3 }}
+      - pause: {}  # Manual approval required
+      - setWeight: 100
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: {{ .Values.linkerd.inject }}
+      labels:
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: success-rate
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  args:
+  - name: service-name
+  metrics:
+  - name: success-rate
+    interval: 5m
+    # NOTE: prometheus query requires prometheus metric
+    # (in a real deployment you would have this setup)
+    successCondition: result[0] >= 0.95
+    failureLimit: 3
+    provider:
+      prometheus:
+        address: http://prometheus.linkerd.svc.cluster.local:9090
+        query: |
+          sum(irate(
+            response_total{direction="inbound",dst_service_name=~"{{`{{args.service-name}}`}}",classification!~"failure"}[5m]
+          )) / 
+          sum(irate(
+            response_total{direction="inbound",dst_service_name=~"{{`{{args.service-name}}`}}"}[5m]
+          ))
+  - name: avg-req-duration
+    interval: 5m
+    successCondition: result[0] <= 1000
+    failureLimit: 3
+    provider:
+      prometheus:
+        address: http://prometheus.linkerd.svc.cluster.local:9090
+        query: |
+          histogram_quantile(0.95,
+            sum(irate(
+              response_latency_ms_bucket{direction="inbound",dst_service_name=~"{{`{{args.service-name}}`}}"}[5m]
+            )) by (le)
+          ) 

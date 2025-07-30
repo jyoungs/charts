@@ -1,0 +1,74 @@
+# Helm
+*.tgz
+Chart.lock
+charts/*/charts/
+
+# Dependency charts
+requirements.lock
+
+# Environment-specific values (optional - uncomment if using)
+# values-dev.yaml
+# values-staging.yaml
+# values-prod.yaml
+# secrets-*.yaml
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+.temporary/
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Kubernetes secrets (if any)
+secret.yaml
+secrets.yaml
+
+# Backup files
+*.bak
+*.backup
+
+# Test output
+test-results/
+test-output/ 
