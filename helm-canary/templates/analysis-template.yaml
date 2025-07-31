@@ -22,12 +22,7 @@ spec:
       prometheus:
         address: http://prometheus.linkerd.svc.cluster.local:9090
         query: |
-          sum(irate(
-            response_total{direction="inbound",dst_service_name="echo-rollout-canary-canary",classification!~"failure"}[5m]
-          )) / 
-          sum(irate(
-            response_total{direction="inbound",dst_service_name="echo-rollout-canary-canary"[5m]
-          ))
+          sum(response_total{app="echo-rollout-canary"})
   - name: avg-req-duration
     interval: 5m
     count: 5
@@ -37,8 +32,4 @@ spec:
       prometheus:
         address: http://prometheus.linkerd.svc.cluster.local:9090
         query: |
-          histogram_quantile(0.95,
-            sum(irate(
-              response_latency_ms_bucket{direction="inbound",dst_service_name="echo-rollout-canary-canary"[5m]
-            )) by (le)
-          ) 
+          sum(response_latency_ms_bucket{app="echo-rollout-canary"}) 
