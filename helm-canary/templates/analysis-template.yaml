@@ -23,10 +23,10 @@ spec:
         address: http://prometheus.linkerd.svc.cluster.local:9090
         query: |
           sum(irate(
-            response_total{direction="inbound",dst_service_name="{{`{{args.service-name}}`}}",classification!~"failure"}[5m]
+            response_total{direction="inbound",dst_service_name="{{args.service-name}}",classification!~"failure"}[5m]
           )) / 
           sum(irate(
-            response_total{direction="inbound",dst_service_name="{{`{{args.service-name}}`}}"[5m]
+            response_total{direction="inbound",dst_service_name="{{args.service-name}}"[5m]
           ))
   - name: avg-req-duration
     interval: 5m
@@ -39,6 +39,6 @@ spec:
         query: |
           histogram_quantile(0.95,
             sum(irate(
-              response_latency_ms_bucket{direction="inbound",dst_service_name="{{`{{args.service-name}}`}}"[5m]
+              response_latency_ms_bucket{direction="inbound",dst_service_name="{{args.service-name}}"[5m]
             )) by (le)
           ) 
