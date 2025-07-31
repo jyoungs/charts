@@ -3,7 +3,7 @@ kind: TrafficSplit
 metadata:
   name: {{ .Release.Name }}-traffic-split
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

@@ -5,7 +5,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -17,7 +17,7 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     release: {{ .Release.Name }}
 ---
 # Stable service
@@ -26,7 +26,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-stable
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -38,7 +38,7 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     release: {{ .Release.Name }}
 ---
 apiVersion: v1
@@ -46,7 +46,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-canary
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -58,5 +58,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     release: {{ .Release.Name }}

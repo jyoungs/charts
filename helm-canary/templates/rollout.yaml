@@ -3,7 +3,7 @@ kind: Rollout
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: {{ .Release.Name }}
       release: {{ .Release.Name }}
   strategy:
     canary:
@@ -28,7 +28,7 @@ spec:
           duration: {{ .Values.canary.steps.pause1Duration }}
       - analysis:
           templates:
-          - templateName: success-rate
+          - templateName: {{ .Release.Name }}-success-rate
           args:
           - name: service-name
             value: {{ .Release.Name }}-canary
@@ -37,7 +37,7 @@ spec:
           duration: {{ .Values.canary.steps.pause2Duration }}
       - analysis:
           templates:
-          - templateName: success-rate
+          - templateName: {{ .Release.Name }}-success-rate
           args:
           - name: service-name
             value: {{ .Release.Name }}-canary
@@ -49,11 +49,11 @@ spec:
       annotations:
         linkerd.io/inject: {{ .Values.linkerd.inject }}
       labels:
-        app: {{ .Chart.Name }}
+        app: {{ .Release.Name }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
