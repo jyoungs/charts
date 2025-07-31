@@ -3,7 +3,7 @@ kind: Rollout
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: {{ .Release.Name }}
       release: {{ .Release.Name }}
   strategy:
     blueGreen:
@@ -23,13 +23,13 @@ spec:
       # Analysis disabled due to Prometheus authentication requirements
       # prePromotionAnalysis:
       #   templates:
-      #   - templateName: success-rate
+      #   - templateName: {{ .Release.Name }}-success-rate
       #   args:
       #   - name: service-name
       #     value: {{ .Release.Name }}-preview
       # postPromotionAnalysis:
       #   templates:
-      #   - templateName: success-rate
+      #   - templateName: {{ .Release.Name }}-success-rate
       #   args:
       #   - name: service-name
       #     value: {{ .Release.Name }}
@@ -38,11 +38,11 @@ spec:
       annotations:
         linkerd.io/inject: {{ .Values.linkerd.inject }}
       labels:
-        app: {{ .Chart.Name }}
+        app: {{ .Release.Name }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
