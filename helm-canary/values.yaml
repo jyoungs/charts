@@ -16,9 +16,9 @@ service:
 canary:
   steps:
     setWeight1: 10    # Start with 10% traffic
-    pause1Duration: "15s"
+    pause1Duration: "60s"
     setWeight2: 30    # Increase to 30% traffic
-    pause2Duration: "30s"
+    pause2Duration: "60s"
     setWeight3: 50    # Increase to 50% traffic
     # Final pause requires manual approval before 100%
 
