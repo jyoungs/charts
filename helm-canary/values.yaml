@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: nginxdemos/hello
-  tag: plain-text  # 0.2-plain-text
+  tag: 0.3 # 0.1[-plain-text] , 0.2 , 0.3 , 0.4 are all available
   pullPolicy: IfNotPresent
 
 service:
