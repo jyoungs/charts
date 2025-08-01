@@ -20,7 +20,7 @@ spec:
     failureLimit: 3
     provider:
       prometheus:
-        address: http://prometheus.linkerd.svc.cluster.local:9090
+        address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
           sum(response_total{app="echo-rollout-canary"})
   - name: avg-req-duration
@@ -30,6 +30,6 @@ spec:
     failureLimit: 3
     provider:
       prometheus:
-        address: http://prometheus.linkerd.svc.cluster.local:9090
+        address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
           sum(response_latency_ms_bucket{app="echo-rollout-canary"}) 
