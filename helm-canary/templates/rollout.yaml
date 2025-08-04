@@ -30,8 +30,10 @@ spec:
           templates:
           - templateName: {{ .Release.Name }}-success-rate
           args:
-          - name: service-name
-            value: {{ .Release.Name }}-canary
+          - name: root-service-name
+            value: {{ .Release.Name }}
+          - name: canary-pod-template-hash
+            value: "{{`{{rollout.spec.template.metadata.labels.pod-template-hash}}`}}"
       - setWeight: {{ .Values.canary.steps.setWeight2 }}
       - pause: 
           duration: {{ .Values.canary.steps.pause2Duration }}
@@ -39,8 +41,10 @@ spec:
           templates:
           - templateName: {{ .Release.Name }}-success-rate
           args:
-          - name: service-name
-            value: {{ .Release.Name }}-canary
+          - name: root-service-name
+            value: {{ .Release.Name }}
+          - name: canary-pod-template-hash
+            value: "{{`{{rollout.spec.template.metadata.labels.pod-template-hash}}`}}"
       - setWeight: {{ .Values.canary.steps.setWeight3 }}
       - pause: {}  # Manual approval required
       - setWeight: 100

@@ -9,27 +9,27 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   args:
-  - name: service-name
+  - name: root-service-name
+  - name: canary-pod-template-hash
   metrics:
   - name: success-rate
-    interval: 5m
-    count: 5
-    # NOTE: prometheus query requires prometheus metric
-    # (in a real deployment you would have this setup)
+    interval: 30s
+    count: 3
     successCondition: result[0] >= 0.95
-    failureLimit: 3
+    failureLimit: 2
     provider:
       prometheus:
         address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
-          sum(response_total{app="echo-rollout-canary"})
-  - name: avg-req-duration
-    interval: 5m
-    count: 5
-    successCondition: result[0] <= 1000
-    failureLimit: 3
+          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}",classification!="failure"}[1m])) / 
+          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}"[1m]))
+  - name: request-rate
+    interval: 30s
+    count: 3
+    successCondition: result[0] > 0
+    failureLimit: 2
     provider:
       prometheus:
         address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
-          sum(response_latency_ms_bucket{app="echo-rollout-canary"}) 
+          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}"[1m])) 
