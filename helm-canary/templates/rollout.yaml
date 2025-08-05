@@ -33,7 +33,7 @@ spec:
           - name: root-service-name
             value: {{ .Release.Name }}
           - name: canary-pod-template-hash
-            value: "CANARY_HASH"
+            value: "{{`{{rollout.status.canary.weights.canary.podTemplateHash}}`}}"
       - setWeight: {{ .Values.canary.steps.setWeight2 }}
       - pause: 
           duration: {{ .Values.canary.steps.pause2Duration }}
@@ -44,7 +44,7 @@ spec:
           - name: root-service-name
             value: {{ .Release.Name }}
           - name: canary-pod-template-hash
-            value: "CANARY_HASH"
+            value: "{{`{{rollout.status.canary.weights.canary.podTemplateHash}}`}}"
       - setWeight: {{ .Values.canary.steps.setWeight3 }}
       - pause: {}  # Manual approval required
       - setWeight: 100
