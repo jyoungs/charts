@@ -10,6 +10,10 @@ metadata:
 spec:
   args:
   - name: root-service-name
+  - name: pod-template-hash
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['rollouts-pod-template-hash']
   - name: canary-pod-template-hash
   metrics:
   - name: success-rate
@@ -21,5 +25,5 @@ spec:
       prometheus:
         address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
-          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}",classification!="failure"}[1m])) / 
-          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}"}[1m])) 
+          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.pod-template-hash}}`}}",classification!="failure"}[1m])) / 
+          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.pod-template-hash}}`}}"}[1m])) 
