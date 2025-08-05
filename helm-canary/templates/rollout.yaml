@@ -32,22 +32,10 @@ spec:
           args:
           - name: root-service-name
             value: {{ .Release.Name }}
-          - name: canary-pod-template-hash
+          - name: pod-template-hash
             valueFrom:
-              podTemplateHashValue: Canary
+              podTemplateHashValue: Latest
       - setWeight: {{ .Values.canary.steps.setWeight2 }}
-      - pause: 
-          duration: {{ .Values.canary.steps.pause2Duration }}
-      - analysis:
-          templates:
-          - templateName: {{ .Release.Name }}-success-rate
-          args:
-          - name: root-service-name
-            value: {{ .Release.Name }}
-          - name: canary-pod-template-hash
-            valueFrom:
-              podTemplateHashValue: Canary
-      - setWeight: {{ .Values.canary.steps.setWeight3 }}
       - pause: {}  # Manual approval required
       - setWeight: 100
   template:
