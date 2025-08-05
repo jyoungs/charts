@@ -21,8 +21,8 @@ spec:
       prometheus:
         address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
-          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}",classification!="failure"}[1m])) / 
-          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}"[1m]))
+          sum(rate(response_total{app="{{args.root-service-name}}",rollouts_pod_template_hash="{{args.canary-pod-template-hash}}",classification!="failure"}[1m])) / 
+          sum(rate(response_total{app="{{args.root-service-name}}",rollouts_pod_template_hash="{{args.canary-pod-template-hash}}"[1m]))
   - name: request-rate
     interval: 30s
     count: 3
@@ -32,4 +32,4 @@ spec:
       prometheus:
         address: http://prometheus.linkerd-viz.svc.cluster.local:9090
         query: |
-          sum(rate(response_total{app="{{`{{args.root-service-name}}`}}",rollouts_pod_template_hash="{{`{{args.canary-pod-template-hash}}`}}"[1m])) 
+          sum(rate(response_total{app="{{args.root-service-name}}",rollouts_pod_template_hash="{{args.canary-pod-template-hash}}"[1m])) 
