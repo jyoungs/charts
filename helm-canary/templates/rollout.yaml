@@ -44,7 +44,7 @@ spec:
           args:
           - name: root-service-name
             value: {{ .Release.Name }}
-          - name: pod-template-hash
+          - name: canary-pod-template-hash
             valueFrom:
               podTemplateHashValue: Canary
       - setWeight: {{ .Values.canary.steps.setWeight3 }}
