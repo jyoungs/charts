@@ -19,9 +19,10 @@ spec:
       stableService: {{ .Release.Name }}-stable
       canaryService: {{ .Release.Name }}-canary
       trafficRouting:
-        smi:
-          rootService: {{ .Release.Name }}
-          trafficSplitName: {{ .Release.Name }}-traffic-split
+        plugins:
+          argoproj-labs/gatewayAPI:
+            httpRoute: sample-canary
+            namespace: jytemp
       steps:
       - setWeight: {{ .Values.canary.steps.setWeight1 }}
       - pause: 
